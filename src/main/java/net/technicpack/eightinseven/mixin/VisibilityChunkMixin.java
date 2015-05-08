@@ -1,7 +1,8 @@
 package net.technicpack.eightinseven.mixin;
 
-/**
- * Created by Stephen on 5/8/2015.
- */
+import net.minecraft.world.chunk.Chunk;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Chunk.class)
 public class VisibilityChunkMixin {
 }
