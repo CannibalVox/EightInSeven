@@ -1,0 +1,16 @@
+[
+{
+  "modid": "eightinseven",
+  "name": "Eight in Seven",
+  "description": "Minecraft 8 visibility walking in 1.7.10.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["CanVox"],
+  "credits": "Special thanks to tommo for posting the algorithm details on his blog.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

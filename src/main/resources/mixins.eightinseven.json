@@ -1,0 +1,9 @@
+{
+  "required":true,
+  "minVersion":"0.3",
+  "package":"net.technicpack.eightinseven.mixin",
+  "mixins": [
+    "VisibilityChunkMixin"
+  ],
+  "refmap":"eightinseven.mixin.refmap.json"
+}
