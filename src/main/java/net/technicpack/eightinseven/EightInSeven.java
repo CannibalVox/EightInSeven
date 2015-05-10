@@ -3,7 +3,16 @@ package net.technicpack.eightinseven;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.world.chunk.Chunk;
 import net.technicpack.eightinseven.coremod.EightInSevenResourcePack;
+import net.technicpack.eightinseven.mixin.VisibilityChunkMixin;
+import net.technicpack.eightinseven.visibility.ChunkVisibilityWorker;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EightInSeven extends DummyModContainer {
     public static final String modId = "eightinseven";
@@ -14,6 +23,8 @@ public class EightInSeven extends DummyModContainer {
 
     @SidedProxy(clientSide = "net.technicpack.eightinseven.ClientProxy", serverSide = "net.technicpack.eightinseven.CommonProxy")
     public static CommonProxy proxy;
+
+    private ExecutorService visibilityRecalcService = null;
 
     public EightInSeven() {
         super(new ModMetadata());
@@ -35,4 +46,22 @@ public class EightInSeven extends DummyModContainer {
 
     @Override
     public Class<?> getCustomResourcePackClass() { return EightInSevenResourcePack.class; }
+
+    @SubscribeEvent
+    public void starting(FMLServerStartingEvent event) {
+        if (visibilityRecalcService != null && !visibilityRecalcService.isShutdown())
+            visibilityRecalcService.shutdown();
+
+        visibilityRecalcService = Executors.newFixedThreadPool(6);
+    }
+
+    @SubscribeEvent
+    public void stopping(FMLServerStoppingEvent event) {
+        if (visibilityRecalcService != null && !visibilityRecalcService.isShutdown())
+            visibilityRecalcService.shutdown();
+    }
+
+    public void queueChunkRecalculate(Chunk chunk, VisibilityChunkMixin mixinChunk, int subChunk) {
+        visibilityRecalcService.execute(new ChunkVisibilityWorker(chunk, mixinChunk, subChunk));
+    }
 }
